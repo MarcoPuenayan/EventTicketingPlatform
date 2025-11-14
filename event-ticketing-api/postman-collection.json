@@ -1,0 +1,1000 @@
+{
+  "info": {
+    "name": "Event Ticketing Platform API",
+    "description": "Complete API collection for Event Ticketing Platform - NestJS Migration",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "event_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ticket_type_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', response.access_token);",
+                  "    pm.collectionVariables.set('user_id', response.user.userId);",
+                  "    pm.environment.set('access_token', response.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"1234567890\",\n  \"dateOfBirth\": \"1990-01-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Organizer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@example.com\",\n  \"password\": \"OrganizerPass123!\",\n  \"firstName\": \"Sarah\",\n  \"lastName\": \"Smith\",\n  \"phoneNumber\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', response.access_token);",
+                  "    pm.environment.set('access_token', response.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('event_id', response.eventId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Summer Music Festival\",\n  \"description\": \"Amazing outdoor concert with top artists\",\n  \"startDate\": \"2024-07-15T18:00:00Z\",\n  \"endDate\": \"2024-07-15T23:00:00Z\",\n  \"categoryId\": 1,\n  \"venueId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": ["{{base_url}}"],
+              "path": ["events"]
+            }
+          }
+        },
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/events?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["events"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "Published",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryId",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Event by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Summer Music Festival\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Ticket Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('ticket_type_id', response.ticketTypeId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General Admission\",\n  \"description\": \"Standard entry ticket\",\n  \"price\": 50.00,\n  \"capacity\": 500,\n  \"maxPerOrder\": 10,\n  \"salesStartDate\": \"2024-06-01T00:00:00Z\",\n  \"salesEndDate\": \"2024-07-14T23:59:59Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/ticket-types",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}", "ticket-types"]
+            }
+          }
+        },
+        {
+          "name": "Publish Event",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/publish",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}", "publish"]
+            }
+          }
+        },
+        {
+          "name": "Unpublish Event",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}/unpublish",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}", "unpublish"]
+            }
+          }
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/events/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["events", "{{event_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Calculate Order Summary",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticketTypeId\": {{ticket_type_id}},\n  \"quantity\": 2,\n  \"promoCode\": \"SUMMER20\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/calculate-summary",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "calculate-summary"]
+            }
+          }
+        },
+        {
+          "name": "Purchase Tickets",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticketTypeId\": {{ticket_type_id}},\n  \"quantity\": 2,\n  \"promoCode\": \"SUMMER20\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/purchase",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "purchase"]
+            }
+          }
+        },
+        {
+          "name": "Get My Tickets",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tickets/my-tickets",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "my-tickets"]
+            }
+          }
+        },
+        {
+          "name": "Validate Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tickets/validate/TKT-12345",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "validate", "TKT-12345"]
+            }
+          }
+        },
+        {
+          "name": "Check In Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/tickets/check-in/TKT-12345",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "check-in", "TKT-12345"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promo Codes",
+      "item": [
+        {
+          "name": "Create Promo Code",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER20\",\n  \"discountType\": \"Percentage\",\n  \"discountValue\": 20,\n  \"startDate\": \"2024-06-01T00:00:00Z\",\n  \"endDate\": \"2024-08-31T23:59:59Z\",\n  \"maxUses\": 100,\n  \"minPurchaseAmount\": 50,\n  \"maxDiscountAmount\": 50,\n  \"scope\": \"All\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/promo-codes",
+              "host": ["{{base_url}}"],
+              "path": ["promo-codes"]
+            }
+          }
+        },
+        {
+          "name": "Validate Promo Code",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER20\",\n  \"eventId\": {{event_id}},\n  \"orderAmount\": 100\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/promo-codes/validate",
+              "host": ["{{base_url}}"],
+              "path": ["promo-codes", "validate"]
+            }
+          }
+        },
+        {
+          "name": "Get Promo Codes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/promo-codes",
+              "host": ["{{base_url}}"],
+              "path": ["promo-codes"]
+            }
+          }
+        },
+        {
+          "name": "Get Promo Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/promo-codes/1/analytics",
+              "host": ["{{base_url}}"],
+              "path": ["promo-codes", "1", "analytics"]
+            }
+          }
+        },
+        {
+          "name": "Deactivate Promo Code",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/promo-codes/1/deactivate",
+              "host": ["{{base_url}}"],
+              "path": ["promo-codes", "1", "deactivate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Revenue Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/revenue",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "revenue"]
+            }
+          }
+        },
+        {
+          "name": "Capacity Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/capacity/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "capacity", "{{event_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Demographics Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/demographics/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "demographics", "{{event_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Check-In Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/check-ins/{{event_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "check-ins", "{{event_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Low Attendance Events",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/low-attendance?threshold=50",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "low-attendance"],
+              "query": [
+                {
+                  "key": "threshold",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top Selling Events",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/top-selling?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "top-selling"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sales Over Time",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/sales-over-time/{{event_id}}?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "sales-over-time", "{{event_id}}"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Music\",\n  \"description\": \"Music concerts and festivals\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Venues",
+      "item": [
+        {
+          "name": "Get Venues",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/venues",
+              "host": ["{{base_url}}"],
+              "path": ["venues"]
+            }
+          }
+        },
+        {
+          "name": "Create Venue",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Madison Square Garden\",\n  \"address\": \"4 Pennsylvania Plaza\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"capacity\": 20000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/venues",
+              "host": ["{{base_url}}"],
+              "path": ["venues"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get User Preferences",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/users/preferences",
+              "host": ["{{base_url}}"],
+              "path": ["users", "preferences"]
+            }
+          }
+        },
+        {
+          "name": "Update User Preferences",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"dark\",\n  \"language\": \"en\",\n  \"notificationsEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/preferences",
+              "host": ["{{base_url}}"],
+              "path": ["users", "preferences"]
+            }
+          }
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/users/orders",
+              "host": ["{{base_url}}"],
+              "path": ["users", "orders"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

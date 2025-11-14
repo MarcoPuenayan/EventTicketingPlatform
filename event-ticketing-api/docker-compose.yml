@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event-ticketing-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DB_HOST=sqlserver
+      - DB_PORT=1433
+      - DB_USERNAME=sa
+      - DB_PASSWORD=P@ssw0rd123!
+      - DB_DATABASE=EventPlanning
+      - DB_ENCRYPT=false
+      - DB_TRUST_SERVER_CERTIFICATE=true
+      - JWT_SECRET=YourSuperSecretKeyThatIsAtLeast32CharactersLongForSecurity123456789
+      - JWT_ISSUER=EventTicketingAPI
+      - JWT_AUDIENCE=EventTicketingApp
+      - JWT_EXPIRY=60m
+      - CORS_ORIGIN=http://localhost:3000
+    depends_on:
+      - sqlserver
+    networks:
+      - event-ticketing-network
+    restart: unless-stopped
+
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: event-ticketing-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - event-ticketing-network
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  event-ticketing-network:
+    driver: bridge

@@ -1,0 +1,43 @@
+# Ignore node modules
+node_modules/
+
+# Ignore build output
+dist/
+build/
+
+# Ignore logs
+logs/
+*.log
+npm-debug.log*
+
+# Ignore environment files
+.env
+.env.local
+.env.production
+.env.test
+
+# Ignore uploads
+uploads/
+
+# Ignore coverage reports
+coverage/
+.nyc_output/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore test files
+*.spec.ts
+*.test.ts
+test/
+
+# Ignore migration files (run migrations separately)
+src/migrations/
